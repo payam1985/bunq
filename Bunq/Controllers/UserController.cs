@@ -27,6 +27,8 @@ namespace Bunq.Controllers
             return Ok(users);
         }
 
+        [HttpGet]
+        [Route("{id?}")]
         public async Task<IActionResult> GetUser(long? id)
         {
             if (id == null || id == 0) return NotFound("user not found");
@@ -36,6 +38,7 @@ namespace Bunq.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> PostUser([FromBody] User user)
         {
             var newUser = await _userRepository.Create(user);
