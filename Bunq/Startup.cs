@@ -67,7 +67,7 @@ namespace Bunq
         {
             route.MapRoute(
                 "Default",
-                "{controller}/{action}/{id?}");
+                "{controller=User}/{action}/{id?}");
         }
     }
 }
