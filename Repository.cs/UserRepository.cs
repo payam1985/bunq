@@ -34,6 +34,7 @@ namespace Repository
         {
             _unitOfWork.Context.Entry(entity).State = EntityState.Modified;
             await _unitOfWork.Commit();
+            return entity;
         }
 
         public async Task<int> Delete(long id)
