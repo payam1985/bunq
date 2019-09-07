@@ -11,9 +11,11 @@ namespace DomainCore
     {
         Task<User> Create(User user);
 
-        Task<User> Find(long id);
+        Task<User> FindUser(long id);
 
         Task<IEnumerable<User>> GetUsers();
+
+        Task<User> GetUser(long id);
 
         Task<User> Update(User entity);
 

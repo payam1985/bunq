@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DataModel;
 using DomainCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Repository
 {
@@ -23,21 +24,31 @@ namespace Repository
             return user;
         }
 
-        public async Task<User> Find(long id) => await _unitOfWork.Context.Users.FindAsync(id);
+        public async Task<User> FindUser(long id) => await _unitOfWork.Context.Users.FindAsync(id);
 
-        public Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<User>> GetUsers() => await _unitOfWork.Context.Users.ToListAsync();
+
+        public async Task<User> GetUser(long id) => await _unitOfWork.Context.Users.FindAsync(id);
+
+        public async Task<User> Update(User entity)
         {
-            throw new NotImplementedException();
+            _unitOfWork.Context.Entry(entity).State = EntityState.Modified;
+            await _unitOfWork.Commit();
         }
 
-        public Task<User> Update(User entity)
+        public async Task<int> Delete(long id)
         {
-            throw new NotImplementedException();
+            var user = await FindUser(id);
+            return user == null ? 0 : await DeleteUser(user);
         }
 
-        public Task<int> Delete(long id)
+        private async Task<int> DeleteUser(User user)
         {
-            throw new NotImplementedException();
+            if (_unitOfWork.Context.Entry(user).State == EntityState.Detached)
+                _unitOfWork.Context.Users.Attach(user);
+            _unitOfWork.Context.Users.Remove(user);
+            await _unitOfWork.Commit();
+            return 1;
         }
     }
 
