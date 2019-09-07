@@ -1,4 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
+using Bunq.Infrastructure;
 using Bunq.Mapping;
 using DataModel;
 using Microsoft.AspNetCore.Builder;
@@ -19,8 +23,9 @@ namespace Bunq
         }
 
         public IConfiguration Configuration { get; }
+        private IContainer ApplicationContainer { get; set; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString("bunqContext"),
@@ -36,6 +41,15 @@ namespace Bunq
             //services.AddCors(options => options.AddPolicy("AllowCors", policyVuilder => { }));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // config AutoFac
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            builder.RegisterModule(new RepositoryModule());
+            builder.RegisterModule(new ContextModule());
+            builder.RegisterModule(new MapperModule());
+            ApplicationContainer = builder.Build();
+            return new AutofacServiceProvider(ApplicationContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
