@@ -5,7 +5,7 @@ namespace DomainCore
 {
     public interface IUnitOfWork
     {
-        Task Commit();
+        Task<int> Commit();
 
         ApplicationContext Context { get; }
     }

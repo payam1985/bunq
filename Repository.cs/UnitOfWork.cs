@@ -15,10 +15,7 @@ namespace Repository
         }
 
 
-        public async Task Commit()
-        {
-            await _context.SaveChangesAsync();
-        }
+        public async Task<int> Commit() => await _context.SaveChangesAsync();
 
         public ApplicationContext Context => _context ?? 
                     new ApplicationContext(new DbContextOptions<ApplicationContext>());
